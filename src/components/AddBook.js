@@ -24,39 +24,6 @@ const AddBook = () => {
     }
 
 
-//     const handleSubmit = async (e) => {
-//       e.preventDefault();
-
-//       // const errors = validate();
-//       // if (Object.keys(errors).length !== 0) {
-//       //     return; 
-//       // }
-// try{
-//       const reponse = await axios.post('http://localhost:8082/api/v1/createContact' , formValues)
-//       console.log(reponse);
-      
-
-//       } catch (error){
-          
-//       }
-
-//       try {
-//           const response = await axios.post('http://localhost:8082/api/v1/createContact', formValues);
-//           alert(JSON.stringify(response.data.message));
-//           console.log('Data from API:', response);
-//       } catch (error) {
-//           if (error.response && error.response.data && error.response.data.errors) {
-//               const backendErrors = error.response.data.errors;
-//               let errorMessage = "";
-//               backendErrors.forEach(err => {
-//                   errorMessage += `${err.msg}`;
-//               });
-//               alert(errorMessage);
-//           } else {
-//               console.error('respose error from backend:', error);
-//           }
-//       }
-//   }
     const handleSubmit = async(e) => {
         e.preventDefault();
         const errors = validate(formValues);
