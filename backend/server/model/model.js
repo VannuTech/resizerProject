@@ -11,6 +11,17 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
+exports.getContactsByDetails=async(param) => {
+    try {
+        const queryString = "SELECT id FROM `bookList` WHERE `book_name` = ? AND `issue_date` = ? AND `author_name` = ?";
+        const [rows, fields] = await pool.query(queryString, [param.book_name, param.issue_date, param.author_name]);
+        return rows[0]; // Return the first row if found
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+  }
+
 
 exports.getContacts = async (req) => {
     try {
@@ -27,7 +38,16 @@ exports.getContacts = async (req) => {
     }
 };
 
-
+exports.deleteAllContacts= async() => {
+    try {
+        const queryString = "DELETE FROM `bookList`";
+        await pool.query(queryString);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+  }
+  
 exports.createContacts = async (param) => {
     try {
         const connection = await pool.getConnection();
@@ -41,3 +61,15 @@ exports.createContacts = async (param) => {
         throw err;
     }
 };
+
+exports.updateBook = async(bookId, param) => {
+    try {
+      const queryString = "UPDATE `bookList` SET `book_name` = ?, `issue_date` = ?, `author_name` = ? WHERE `id` = ?";
+      const values = [param.book_name, param.issue_date, param.author_name, bookId];
+      const [result] = await pool.query(queryString, values);
+      return result;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
