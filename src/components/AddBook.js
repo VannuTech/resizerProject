@@ -5,13 +5,13 @@ import Col from 'react-bootstrap/Col';
 import { useState } from 'react';
 import  {validate} from './Validation';
 import { createSession } from './apis';
+import axios from "axios";
 
 const AddBook = () => {
 
     const initialValues = { book_name : "",
     issue_date : "",
-    author_name : "",
-    state:"",
+    author_name : ""
       }
 
     const[formValues, setformValues] = useState(initialValues);
@@ -23,6 +23,40 @@ const AddBook = () => {
         setformValues({...formValues, [name] : value})
     }
 
+
+//     const handleSubmit = async (e) => {
+//       e.preventDefault();
+
+//       // const errors = validate();
+//       // if (Object.keys(errors).length !== 0) {
+//       //     return; 
+//       // }
+// try{
+//       const reponse = await axios.post('http://localhost:8082/api/v1/createContact' , formValues)
+//       console.log(reponse);
+      
+
+//       } catch (error){
+          
+//       }
+
+//       try {
+//           const response = await axios.post('http://localhost:8082/api/v1/createContact', formValues);
+//           alert(JSON.stringify(response.data.message));
+//           console.log('Data from API:', response);
+//       } catch (error) {
+//           if (error.response && error.response.data && error.response.data.errors) {
+//               const backendErrors = error.response.data.errors;
+//               let errorMessage = "";
+//               backendErrors.forEach(err => {
+//                   errorMessage += `${err.msg}`;
+//               });
+//               alert(errorMessage);
+//           } else {
+//               console.error('respose error from backend:', error);
+//           }
+//       }
+//   }
     const handleSubmit = async(e) => {
         e.preventDefault();
         const errors = validate(formValues);
@@ -30,8 +64,8 @@ const AddBook = () => {
         if (
             errors.book_nameErr === "" &&
             errors.issue_dateErr === "" &&         
-            errors.author_nameErr === "" &&
-            errors.stateErr === "" 
+            errors.author_nameErr === "" 
+          
           
         ) {         
            
