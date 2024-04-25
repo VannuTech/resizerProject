@@ -1,5 +1,6 @@
 import axios from "axios";
 
+//api to add data
 export const addBook = async(data) => {
 const api_url = "http://localhost:8082/api/v1/addBook"
 
@@ -16,6 +17,8 @@ try{
   }
 }
 
+//api to update data
+
 export const updateBook = async(data) => {
     const api_url = "http://localhost:8082/api/v1/updateBookById"
  
@@ -31,6 +34,8 @@ export const updateBook = async(data) => {
             
       }
     }
+
+    //api to get data
 export const getBooksList = async(data) => {
     const api_url = "http://localhost:8082/api/v1/getBooksList"
     

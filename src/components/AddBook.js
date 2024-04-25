@@ -2,13 +2,13 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import  {validate} from './Validation';
 import { addBook } from './apis';
 
 
 const AddBook = () => {
-
+//declare the initial state
     const initialValues = { book_name : "",
     issue_date : "",
     author_name : ""
@@ -16,34 +16,43 @@ const AddBook = () => {
 
     const[formValues, setformValues] = useState(initialValues);
     const[formError, setformError] = useState("");
+    const [apiCallCount, setApiCallCount] = useState(parseInt(localStorage.getItem("apiCallCount")) || 0); 
+   
+    //set the count value to local storage, so that it could not change on reload
+    useEffect(() => {
+      localStorage.setItem("apiCallCount", apiCallCount);
+  }, [apiCallCount]);
 
+  //update the state
     const handleChange =(e)=>{
         const name = e.target.name;
         const value = e.target.value;
         setformValues({...formValues, [name] : value})
     }
 
-
+//on filling the valid input, submit the details
     const handleSubmit = async(e) => {
         e.preventDefault();
+        //input validation
         const errors = validate(formValues);
         setformError(errors);
         if (
             errors.book_nameErr === "" &&
             errors.issue_dateErr === "" &&         
-            errors.author_nameErr === "" 
-          
+            errors.author_nameErr === ""           
           
         ) {         
            
             const data = {            
               "book_name": formValues.book_name,           
               "issue_date": formValues.issue_date,            
-              "author_name": formValues.author_name,
-                                       
+              "author_name": formValues.author_name,                                       
              }
             const response = await addBook(data);
             alert(JSON.stringify(response.data.message));
+//increase the count on calling api
+
+            setApiCallCount(apiCallCount + 1); 
             window.location.reload();
 
         } else {            
@@ -83,7 +92,7 @@ const AddBook = () => {
         <Button variant="warning" onClick={handleSubmit}>+Add BOOK</Button>
       </Col>
     </Row>  
-   
+    <p>Total API calls: {apiCallCount}</p>
     </Form>
   );
 }

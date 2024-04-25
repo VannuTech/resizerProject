@@ -8,11 +8,16 @@ import {updateBook} from './apis'
 const BookList = () => {
     const [formValues, setFormValues] = useState([]);
     const [formError, setFormError] = useState({});
+    const [apiCallCount, setApiCallCount] = useState(parseInt(localStorage.getItem("apiCallCount")) || 0);
 
     useEffect(() => {
         getBooklist();
     }, []);
 
+    useEffect(() => {
+        localStorage.setItem("apiCallCount", apiCallCount); 
+    }, [apiCallCount]);
+// get list of books
     const getBooklist = async () => {
         try {
             const response = await getBooksList();
@@ -25,7 +30,7 @@ const BookList = () => {
             console.error('Error fetching book list:', error);
         }
     }
-
+// update state
     const handleChange = (e, index) => {
         const { name, value } = e.target;
         const updatedFormValues = [...formValues];
@@ -33,9 +38,13 @@ const BookList = () => {
         setFormValues(updatedFormValues);
     }
 
+
+    // To update the record, enter the field that need to be updated and then submit the data.
     const handleSubmit = async (e, index, id) => {
      
         e.preventDefault();
+
+        //validate the data
         const errors = validate(formValues[index]);
         setFormError(errors);
         if (
@@ -51,6 +60,8 @@ const BookList = () => {
             }
             const response = await updateBook(data);
             alert(JSON.stringify(response.data.message));
+// count the times API called
+            setApiCallCount(apiCallCount + 1); 
             window.location.reload();
 
         } else {
@@ -100,10 +111,13 @@ const BookList = () => {
                                 />
                                 {formError && formError.author_nameErr && <p style={{ color: "red" }}>Please enter author name!</p>}</td>
                             <td><button onClick={(e) => handleSubmit(e, index, book.id)}>Update</button></td>
+                            
                         </tr>
+                       
                     ))}
                 </tbody>
             </Table>
+            <p>Total API calls: {apiCallCount}</p>
         </div>
     );
 }
