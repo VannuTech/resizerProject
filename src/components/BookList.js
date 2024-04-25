@@ -41,10 +41,9 @@ const BookList = () => {
 
     // To update the record, enter the field that need to be updated and then submit the data.
     const handleSubmit = async (e, index, id) => {
-     
         e.preventDefault();
-
-        //validate the data
+    
+        // Validate the data
         const errors = validate(formValues[index]);
         setFormError(errors);
         if (
@@ -56,18 +55,32 @@ const BookList = () => {
                 "book_name": formValues[index].book_name,
                 "issue_date": formValues[index].issue_date,
                 "author_name": formValues[index].author_name,
-                "id" : id
+                "id": id
             }
-            const response = await updateBook(data);
-            alert(JSON.stringify(response.data.message));
-// count the times API called
-            setApiCallCount(apiCallCount + 1); 
-            window.location.reload();
-
+            try {
+                const response = await updateBook(data);
+                try {
+                    if (response && response.data) {
+                        alert(JSON.stringify(response.data.message));
+                        // Count the times API called
+                        setApiCallCount(apiCallCount + 1);
+                        window.location.reload();
+                    } else {
+                        throw new Error("Response data is undefined");
+                    }
+                } catch (innerError) {
+                    console.error('Error occurred while processing response data:', innerError);
+                   
+                }
+            } catch (error) {
+                console.error( error);
+               
+            }
         } else {
             alert("Please fill correct details.");
         }
     };
+    
 
     return (
         <div style={{ margin: "20px" }}>

@@ -31,34 +31,41 @@ const AddBook = () => {
     }
 
 //on filling the valid input, submit the details
-    const handleSubmit = async(e) => {
-        e.preventDefault();
-        //input validation
-        const errors = validate(formValues);
-        setformError(errors);
-        if (
-            errors.book_nameErr === "" &&
-            errors.issue_dateErr === "" &&         
-            errors.author_nameErr === ""           
+const handleSubmit = async(e) => {
+  e.preventDefault();
+  // Input validation
+  const errors = validate(formValues);
+  setformError(errors);
+  if (
+      errors.book_nameErr === "" &&
+      errors.issue_dateErr === "" &&
+      errors.author_nameErr === ""
+  ) {
+      const data = {
+          "book_name": formValues.book_name,
+          "issue_date": formValues.issue_date,
+          "author_name": formValues.author_name,
+      }
+      try {
+          const response = await addBook(data);
+          if (response && response.data) {
+              alert(JSON.stringify(response.data.message));
+              // Increase the count on calling the API
+              setApiCallCount(apiCallCount + 1);
+              window.location.reload();
+          } else {
+              throw new Error("Response data is undefined");
+          }
+      } catch (error) {
           
-        ) {         
-           
-            const data = {            
-              "book_name": formValues.book_name,           
-              "issue_date": formValues.issue_date,            
-              "author_name": formValues.author_name,                                       
-             }
-            const response = await addBook(data);
-            alert(JSON.stringify(response.data.message));
-//increase the count on calling api
+          console.log('Error occurred while adding book:', error); // Log the error to the console
+         
+      }
+  } else {
+      alert("Please fill correct details.");
+  }
+};
 
-            setApiCallCount(apiCallCount + 1); 
-            window.location.reload();
-
-        } else {            
-            alert("Please fill correct details.");
-        }
-    };
 
     
 
