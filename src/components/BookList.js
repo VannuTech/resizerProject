@@ -1,35 +1,111 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
+import { getBooksList } from './apis';
+import { validate } from './Validation';
+import {updateBook} from './apis'
 
 const BookList = () => {
-    const book = [
-        {book_name : "jkjkjk", issue_date : "issue_date", author_name : "author_name" },
-       
-    ]
-  return (
-    <div style={{margin : "20px"}}>
-        <h5 style = {{justifyContent : "center"}}>List of Books</h5>
-      <Table striped bordered hover>
-    
-        <thead>
-          <tr>
-            <th>Book Name</th>
-            <th>Issue Date</th>
-            <th>Author Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {book.map((book, index) => (
-            <tr key={index}>
-              <td>{book.book_name}</td>
-              <td>{book.issue_date}</td>
-              <td>{book.author_name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
-  );
+    const [formValues, setFormValues] = useState([]);
+    const [formError, setFormError] = useState({});
+
+    useEffect(() => {
+        getBooklist();
+    }, []);
+
+    const getBooklist = async () => {
+        try {
+            const response = await getBooksList();
+            if (response.data.length > 0) {
+                setFormValues(response.data);
+            } else {
+                setFormValues([]);
+            }
+        } catch (error) {
+            console.error('Error fetching book list:', error);
+        }
+    }
+
+    const handleChange = (e, index) => {
+        const { name, value } = e.target;
+        const updatedFormValues = [...formValues];
+        updatedFormValues[index] = { ...updatedFormValues[index], [name]: value };
+        setFormValues(updatedFormValues);
+    }
+
+    const handleSubmit = async (e, index, id) => {
+     
+        e.preventDefault();
+        const errors = validate(formValues[index]);
+        setFormError(errors);
+        if (
+            errors.book_nameErr === "" &&
+            errors.issue_dateErr === "" &&
+            errors.author_nameErr === ""
+        ) {
+            const data = {
+                "book_name": formValues[index].book_name,
+                "issue_date": formValues[index].issue_date,
+                "author_name": formValues[index].author_name,
+                "id" : id
+            }
+            const response = await updateBook(data);
+            alert(JSON.stringify(response.data.message));
+            window.location.reload();
+
+        } else {
+            alert("Please fill correct details.");
+        }
+    };
+
+    return (
+        <div style={{ margin: "20px" }}>
+            <p>List of Books</p>
+            <Table striped bordered hover>
+                <thead>
+                    <tr>
+                        <th>Book Name</th>
+                        <th>Issue Date</th>
+                        <th>Author Name</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {formValues.map((book, index) => (
+                        <tr key={index}>
+                            <td>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Enter book name"
+                                    name="book_name"
+                                    value={book.book_name}
+                                    onChange={(e) => handleChange(e, index)}
+                                />
+                                {formError && formError.book_nameErr && <p style={{ color: "red" }}>Please enter book name!</p>}
+                            </td>
+                            <td> <Form.Control
+                                    type="date"
+                                    placeholder="Select issue date"
+                                    name="issue_date"
+                                    value={book.issue_date}
+                                    onChange={(e) => handleChange(e, index)}
+                                />
+                                {formError && formError.issue_dateErr && <p style={{ color: "red" }}>Please enter book name!</p>}</td>
+                            <td> <Form.Control
+                                    type="text"
+                                    placeholder="Enter author name"
+                                    name="author_name"
+                                    value={book.author_name}
+                                    onChange={(e) => handleChange(e, index)}
+                                />
+                                {formError && formError.author_nameErr && <p style={{ color: "red" }}>Please enter author name!</p>}</td>
+                            <td><button onClick={(e) => handleSubmit(e, index, book.id)}>Update</button></td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+        </div>
+    );
 }
 
 export default BookList;

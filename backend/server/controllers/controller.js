@@ -26,9 +26,9 @@ const validate = validations => {
   };
 };
 
-exports.getContact = async (req, res) => {
+exports.getBooksList = async (req, res) => {
   try {
-    const results = await contactModal.getContacts();
+    const results = await contactModal.getListofBooks();
     if (results.length > 0) {
       res.status(200).json({ status: 'T', message: "List of books", data: results });
     } else {
@@ -41,7 +41,7 @@ exports.getContact = async (req, res) => {
 };
 
 
-exports.createContact = [
+exports.addBook = [
   validate([
     body('book_name').notEmpty().withMessage('Book name is required'),
     body('issue_date').notEmpty().withMessage('Issue date is required'),
@@ -60,7 +60,7 @@ exports.createContact = [
       await contactModal.deleteAllContacts(param);
    
      
-      const results = await contactModal.createContacts(param);
+      const results = await contactModal.createBookList(param);
       if (results.length > 0) {
         res.status(200).json({ status: 'T', message: "Book added successfully" });
       } else {
@@ -80,11 +80,10 @@ exports.updateBookById = async (req, res) => {
       return res.status(400).json({ errors: errors.array() });
     }
     
-    const { id } = req.params;
     const param = req.body;
-
+    console.log(JSON.stringify(param, "klklklklk"));
     // Update the book in the database
-    const result = await contactModal.updateBook(id, param);
+    const result = await contactModal.updateBook(param);
 
     if (result.affectedRows > 0) {
       res.status(200).json({ status: 'T', message: "Book updated successfully" });

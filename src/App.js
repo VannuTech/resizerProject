@@ -22,7 +22,7 @@ const App = () => (
   <Resizable
     style={style}
     defaultSize={{
-      width: 500,
+      width: 600,
       height: 400,
       overflow: "hidden"
     }}

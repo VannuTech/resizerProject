@@ -23,12 +23,12 @@ exports.getContactsByDetails=async(param) => {
   }
 
 
-exports.getContacts = async (req) => {
+exports.getListofBooks = async (req) => {
     try {
       let where = "";
       const condition = " WHERE 1=1 " + where + " ";
       const queryString =
-        "SELECT id, book_name, issue_date, author_name  FROM `bookList` " + condition;
+        "SELECT id, book_name, issue_date, author_name  FROM `booklist` " + condition;
         const [rows, fields] = await pool.query(queryString);
          return rows;
     
@@ -48,7 +48,7 @@ exports.deleteAllContacts= async() => {
       }
   }
   
-exports.createContacts = async (param) => {
+exports.createBookList = async (param) => {
     try {
         const connection = await pool.getConnection();
         const query = "INSERT INTO bookList SET `book_name` = ?, `issue_date` = ?, `author_name` = ?";
@@ -62,10 +62,11 @@ exports.createContacts = async (param) => {
     }
 };
 
-exports.updateBook = async(bookId, param) => {
+exports.updateBook = async(param) => {
+    const id = param.id
     try {
-      const queryString = "UPDATE `bookList` SET `book_name` = ?, `issue_date` = ?, `author_name` = ? WHERE `id` = ?";
-      const values = [param.book_name, param.issue_date, param.author_name, bookId];
+      const queryString = "UPDATE `booklist` SET `book_name` = ?, `issue_date` = ?, `author_name` = ? WHERE `id` = ?";
+      const values = [param.book_name, param.issue_date, param.author_name, id];
       const [result] = await pool.query(queryString, values);
       return result;
     } catch (err) {

@@ -4,8 +4,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useState } from 'react';
 import  {validate} from './Validation';
-import { createSession } from './apis';
-import axios from "axios";
+import { addBook } from './apis';
+
 
 const AddBook = () => {
 
@@ -42,12 +42,15 @@ const AddBook = () => {
               "author_name": formValues.author_name,
                                        
              }
-            const response = await createSession(data);
+            const response = await addBook(data);
             alert(JSON.stringify(response.data.message));
+            window.location.reload();
+
         } else {            
             alert("Please fill correct details.");
         }
     };
+
     
 
   return (
